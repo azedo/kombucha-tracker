@@ -1,0 +1,14 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// WiFi credentials
+#define WIFI_SSID "wifi network name"
+#define WIFI_PASSWORD "password"
+
+// Other configuration
+#define DEFAULT_BREW_DAYS 7
+#define NTP_SERVER "pool.ntp.org"
+#define TIMEZONE "CET-1CEST,M3.5.0,M10.5.0/3"
+
+#endif
+
