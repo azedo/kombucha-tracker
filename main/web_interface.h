@@ -8,7 +8,7 @@ extern int brewDays;
 
 void handleRoot() {
   String html = "<!DOCTYPE html><html>";
-  html += "<head><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+  html += "<head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
   html += "<title>Kombucha Tracker</title>";
   html += "<style>";
   html += "body { font-family: Arial, sans-serif; margin: 20px; }";
@@ -21,7 +21,9 @@ void handleRoot() {
   html += "</style></head><body>";
   html += "<div class='container'>";
   html += "<h1>Kombucha Brewing Tracker</h1>";
-  
+
+  html += "<p><small>Device IP: " + WiFi.localIP().toString() + "</small></p>";
+
   // Display current brewing information
   html += "<div class='info'>";
   html += "<p><small>System time: " + getCurrentTimeString() + "</small></p>";
@@ -61,10 +63,10 @@ void handleSet() {
   if (server.hasArg("startDate") && server.hasArg("brewDays")) {
     startDate = server.arg("startDate");
     brewDays = server.arg("brewDays").toInt();
-    
+
     // Save data to file system
     saveBrewingData();
-    
+
     server.sendHeader("Location", "/");
     server.send(303);
   } else {

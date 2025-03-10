@@ -1,6 +1,14 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// Static IP Configuration
+#define USE_STATIC_IP true
+#define STATIC_IP 192,168,20,151      // Change to an unused IP on your network
+#define GATEWAY 192,168,20,1          // Your router's IP address
+#define SUBNET 255,255,255,0          // Typical subnet mask for home networks
+#define PRIMARY_DNS 8,8,8,8           // Google DNS (optional)
+#define SECONDARY_DNS 8,8,4,4         // Google secondary DNS (optional)
+
 // WiFi credentials
 #define WIFI_SSID "wifi network name"
 #define WIFI_PASSWORD "password"

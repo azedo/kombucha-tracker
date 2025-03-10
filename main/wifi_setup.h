@@ -12,6 +12,19 @@ extern ESP8266WebServer server;
 // No need to declare handleRoot and handleSet as they're already declared in main.ino
 
 void setupWiFi() {
+  #if USE_STATIC_IP
+    // Configure static IP
+    IPAddress staticIP(STATIC_IP);
+    IPAddress gateway(GATEWAY);
+    IPAddress subnet(SUBNET);
+    IPAddress dns1(PRIMARY_DNS);
+    IPAddress dns2(SECONDARY_DNS);
+    
+    // Apply the static IP configuration
+    WiFi.config(staticIP, gateway, subnet, dns1, dns2);
+    Serial.println("Using static IP: " + staticIP.toString());
+  #endif
+  
   WiFi.begin(ssid, password);
   Serial.print("Connecting to WiFi");
   
