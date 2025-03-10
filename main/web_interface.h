@@ -9,6 +9,7 @@ extern String startDate;
 extern int brewDays;
 extern float temperature;
 extern float humidity;
+extern int lightLevel;
 
 void handleRoot() {
   String html = "<!DOCTYPE html><html>";
@@ -49,6 +50,25 @@ void handleRoot() {
   html += "<p><small>Optimal kombucha brewing temperature: " + String(OPTIMAL_TEMP_MIN) + "-" + String(OPTIMAL_TEMP_MAX) + "°C. Outside this range, fermentation may be too slow or too fast.</small></p>";
 
   html += "<p>Humidity: <strong>" + String(humidity, 1) + "%</strong></p>";
+
+  // Add light level information
+  html += "<p>Light Level: <strong>" + String(lightLevel) + "%</strong> ";
+  if (lightLevel < LIGHT_LOW_THRESHOLD) {
+    html += "<span style='color: green;'>&#10004; Good for kombucha</span>";
+  } else if (lightLevel < LIGHT_HIGH_THRESHOLD) {
+    html += "<span style='color: orange;'>&#9888; Moderate - consider reducing</span>";
+  } else {
+    html += "<span style='color: red;'>&#9888; Too bright - protect your brew</span>";
+  }
+  html += "</p>";
+
+  // Add a light level meter
+  html += "<div class='light-meter' style='background: linear-gradient(to right, #003366, #ffcc00, #ffffff); height: 15px; border-radius: 7px; position: relative;'>";
+  html += "<div style='position: absolute; left: " + String(lightLevel) + "%; top: -7px; transform: translateX(-50%);'>▼</div>";
+  html += "</div>";
+
+  // Add light explanation
+  html += "<p><small>Kombucha ferments best in low to moderate light. Direct sunlight can harm the SCOBY.</small></p>";
 
   html += "</div>";
 

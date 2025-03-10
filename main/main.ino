@@ -28,6 +28,8 @@ void loadBrewingData();
 #include "web_interface.h"
 #include "wifi_setup.h"
 #include "led_manager.h"
+#include "light_sensor.h"
+
 
 void setup() {
   Serial.begin(115200);
@@ -37,6 +39,9 @@ void setup() {
 
   // Initialize DHT sensor
   setupDHT();
+
+  // Setup light sensor
+  setupLightSensor();
 
   // Initialize file system
   if (!LittleFS.begin()) {
@@ -75,6 +80,9 @@ void loop() {
 
   // Update temperature readings
   updateDHTReadings();
+
+  // Update light sensor readings
+  updateLightReading();
 
   // Update LED status
   bool hasBatch = (startDate != "");
