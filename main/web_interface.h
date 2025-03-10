@@ -1,10 +1,14 @@
 #ifndef WEB_INTERFACE_H
 #define WEB_INTERFACE_H
 
-// External references 
+#include "config.h"
+
+// External references
 extern ESP8266WebServer server;
 extern String startDate;
 extern int brewDays;
+extern float temperature;
+extern float humidity;
 
 void handleRoot() {
   String html = "<!DOCTYPE html><html>";
@@ -18,11 +22,35 @@ void handleRoot() {
   html += "form { margin-top: 20px; }";
   html += "label, input { display: block; margin-bottom: 10px; }";
   html += "input[type='submit'] { background-color: #5c8d89; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }";
+  html += ".environment {background-color: #e8f5e9;padding: 15px;border-radius: 5px;margin: 15px 0;}";
+  html += ".environment h2 {margin-top: 0;color: #2e7d32;}";
   html += "</style></head><body>";
   html += "<div class='container'>";
   html += "<h1>Kombucha Brewing Tracker</h1>";
 
   html += "<p><small>Device IP: " + WiFi.localIP().toString() + "</small></p>";
+
+  // Add temperature and humidity information
+  html += "<div class='environment'>";
+  html += "<h2>Environment</h2>";
+  html += "<p>Temperature: <strong>" + String(temperature, 1) + "°C</strong>";
+
+  // Add temperature status indicator with color coding
+  if (temperature < OPTIMAL_TEMP_MIN) {
+    html += " <span style='color: blue;'>&#10052; Too cold</span>";
+  } else if (temperature > OPTIMAL_TEMP_MAX) {
+    html += " <span style='color: orange;'>&#9728; Too warm</span>";
+  } else {
+    html += " <span style='color: green;'>&#10004; Optimal</span>";
+  }
+  html += "</p>";
+
+  // Add temperature explanation
+  html += "<p><small>Optimal kombucha brewing temperature: " + String(OPTIMAL_TEMP_MIN) + "-" + String(OPTIMAL_TEMP_MAX) + "°C. Outside this range, fermentation may be too slow or too fast.</small></p>";
+
+  html += "<p>Humidity: <strong>" + String(humidity, 1) + "%</strong></p>";
+
+  html += "</div>";
 
   // Display current brewing information
   html += "<div class='info'>";
@@ -31,10 +59,10 @@ void handleRoot() {
     // Calculate days elapsed and remaining
     int daysPassed = getDaysPassed(startDate);
     int daysRemaining = brewDays - daysPassed;
-    
+
     html += "<p>Batch started on: " + startDate + "</p>";
     html += "<p>Days brewing: " + String(daysPassed) + "</p>";
-    
+
     if (daysRemaining > 0) {
       html += "<p>Ready in approximately " + String(daysRemaining) + " days</p>";
       html += "<p>Expected ready date: " + getReadyDate(startDate, brewDays) + "</p>";
