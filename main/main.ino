@@ -27,10 +27,14 @@ void loadBrewingData();
 #include "data_manager.h"
 #include "web_interface.h"
 #include "wifi_setup.h"
+#include "led_manager.h"
 
 void setup() {
   Serial.begin(115200);
-  
+
+  // Initialize LED pins
+  setupLEDs();
+
   // Initialize DHT sensor
   setupDHT();
 
@@ -71,6 +75,17 @@ void loop() {
 
   // Update temperature readings
   updateDHTReadings();
+
+  // Update LED status
+  bool hasBatch = (startDate != "");
+  bool isReady = false;
+
+  if (hasBatch) {
+    int daysPassed = getDaysPassed(startDate);
+    isReady = (daysPassed >= brewDays);
+  }
+
+  updateLEDs(hasBatch, isReady);
 
   // Small delay to prevent watchdog reset
   delay(10);

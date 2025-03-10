@@ -74,6 +74,15 @@ void handleRoot() {
   }
   html += "</div>";
   
+  // Add a simple color legend
+  html += "<div class='led-legend' style='margin-top: 15px;'>";
+  html += "<h3>LED Color Guide:</h3>";
+  html += "<ul>";
+  html += "<li><span style='color: red;'>●</span> <strong>Red:</strong> No active batch</li>";
+  html += "<li><span style='color: green;'>●</span> <strong>Green:</strong> Ready to enjoy!</li>";
+  html += "</ul>";
+  html += "</div>";
+
   // Form for setting new brewing batch
   html += "<form action='/set' method='post'>";
   html += "<label for='startDate'>Start Date (YYYY-MM-DD):</label>";
@@ -83,7 +92,7 @@ void handleRoot() {
   html += "<input type='submit' value='Set Brewing Time'>";
   html += "</form>";
   html += "</div></body></html>";
-  
+
   server.send(200, "text/html", html);
 }
 
