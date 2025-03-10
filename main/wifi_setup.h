@@ -42,6 +42,7 @@ void setupServer() {
   // Set up web server routes
   server.on("/", handleRoot);
   server.on("/set", HTTP_POST, handleSet);
+  server.on("/cancel", HTTP_POST, handleCancel);
   
   // Start server
   server.begin();

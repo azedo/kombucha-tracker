@@ -69,11 +69,45 @@ void handleRoot() {
     } else {
       html += "<p><strong>Your kombucha is ready!</strong> (Ready since " + String(-daysRemaining) + " days)</p>";
     }
+
+    // Add cancel button when there's an active batch
+    html += "<form action='/cancel' method='post' style='margin-top: 15px;'>";
+    html += "<input type='submit' value='Cancel This Batch' style='background-color: #f44336; padding: 8px 12px;'>";
+    html += "</form>";
   } else {
     html += "<p>No active batch. Start a new one below.</p>";
   }
   html += "</div>";
-  
+
+
+  // Determine status for display
+  String statusText = "NO ACTIVE BATCH";
+  String statusColor = "red";
+  int progressPercent = 0;
+
+  if (startDate != "") {
+    int daysPassed = getDaysPassed(startDate);
+    progressPercent = (daysPassed * 100) / brewDays;
+    progressPercent = min(progressPercent, 100);  // Cap at 100%
+
+    if (daysPassed >= brewDays) {
+      statusText = "READY TO ENJOY!";
+      statusColor = "green";
+    } else {
+      statusText = "BREWING IN PROGRESS";
+      statusColor = "orange";  // for yellow
+    }
+  }
+
+  html += "<p>Status: <span style='color: " + statusColor + "; font-weight: bold;'>" + statusText + "</span></p>";
+
+  // Only show progress bar if there's an active batch
+  if (startDate != "") {
+    html += "<div class='progress-bar' style='background-color: #eee; height: 20px; border-radius: 10px; margin: 10px 0;'>";
+    html += "<div style='background-color: " + statusColor + "; width: " + String(progressPercent) + "%; height: 100%; border-radius: 10px;'></div>";
+    html += "</div>";
+  }
+
   // Add a simple color legend
   html += "<div class='led-legend' style='margin-top: 15px;'>";
   html += "<h3>LED Color Guide:</h3>";
@@ -109,6 +143,18 @@ void handleSet() {
   } else {
     server.send(400, "text/plain", "Bad Request");
   }
+}
+
+void handleCancel() {
+  // Clear the batch data
+  startDate = "";
+
+  // Save the updated (empty) data
+  saveBrewingData();
+
+  // Redirect back to the main page
+  server.sendHeader("Location", "/");
+  server.send(303);
 }
 
 #endif
